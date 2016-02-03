@@ -48,6 +48,9 @@ extension AppDelegate: CLLocationManagerDelegate {
       notification.alertBody = "Are you forgetting something?"
       notification.soundName = "Default"
       UIApplication.sharedApplication().presentLocalNotificationNow(notification)
+        
+        load_image("https://cg2010studio.files.wordpress.com/2015/12/stackview.png?w=540&h=545")
+        load_data("http://maps.googleapis.com/maps/api/geocode/json?latlng=25.0477709,121.5315472")
     }
   }
     
@@ -57,6 +60,48 @@ extension AppDelegate: CLLocationManagerDelegate {
             notification.alertBody = "Great, Happy Object comes back"
             notification.soundName = "Default"
             UIApplication.sharedApplication().presentLocalNotificationNow(notification)
+            
+            load_image("https://cg2010studio.files.wordpress.com/2016/01/e59c96e8a7a3e4b88be99baae88887e4b88be99cb0-snow-and-sleet.gif?w=540")
+            load_data("http://maps.googleapis.com/maps/api/geocode/json?latlng=25.0477709,121.5315472")
         }
     }
+    
+    func load_image(urlString:String)
+    {
+        dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), {
+            var test = UIImage(data: NSData(contentsOfURL: NSURL(string:urlString)!)!)
+            print(test)
+        })
+    }
+    
+    func load_data(urlString:String)
+    {
+        let url = NSURL(string: urlString)!
+        let session = NSURLSession.sharedSession()
+        
+        let request = NSMutableURLRequest(URL: url)
+        request.HTTPMethod = "POST"
+        request.cachePolicy = NSURLRequestCachePolicy.ReloadIgnoringCacheData
+        
+        let paramString = ""
+        request.HTTPBody = paramString.dataUsingEncoding(NSUTF8StringEncoding)
+        
+        let task = session.dataTaskWithRequest(request) {
+            (
+            let data, let response, let error) in
+            
+            guard let _:NSData = data, let _:NSURLResponse = response  where error == nil else {
+                print("error")
+                return
+            }
+            
+            let dataString = NSString(data: data!, encoding: NSUTF8StringEncoding)
+            print(dataString)
+            
+        }
+        
+        task.resume()
+    }
 }
+
+
